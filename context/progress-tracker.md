@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor chrome components complete (feature spec `02-editor.md`)
+- Auth wired (feature spec `03-auth.md`)
 
 ## Current Goal
 
-- Begin the next feature unit (auth, projects, or canvas foundation).
+- Begin the next feature unit (projects or canvas foundation).
 
 ## Completed
 
@@ -27,13 +27,24 @@ Update this file whenever the current phase, active feature, or implementation s
   - `components/editor/editor-dialog.tsx` — generic reusable dialog pattern over shadcn `Dialog`; `rounded-3xl`/`bg-elevated` modal styling from `globals.css` tokens; title, optional description, optional footer-action slot, and children. No concrete dialogs built yet, per spec.
   - Verified: `tsc --noEmit` clean, `eslint components/editor` clean, `next build` succeeds.
 
+- `03-auth.md`:
+  - Installed `@clerk/ui`; added `NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in` and `NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up` to `.env.local`.
+  - `proxy.ts` at project root — protected-first middleware using `clerkMiddleware` + `createRouteMatcher`; public routes read from the sign-in/sign-up env vars. Standard Turbopack asset matcher included.
+  - `app/layout.tsx` — `ClerkProvider` wraps the root layout; `dark` theme from `@clerk/ui/themes`; appearance variables mapped to CSS custom properties (`colorBackground`, `colorInput`, `colorPrimary`, `colorForeground`, `colorMutedForeground`, `colorNeutral`, `borderRadius`).
+  - `app/sign-in/[[...sign-in]]/page.tsx` — two-panel layout (left: compact logo + tagline + feature list, hidden on `<lg`; right: centered `<SignIn>` component). No gradients.
+  - `app/sign-up/[[...sign-up]]/page.tsx` — same two-panel pattern with `<SignUp>`.
+  - `app/page.tsx` — server component; `auth()` check redirects authenticated users to `/editor` and unauthenticated to `/sign-in`.
+  - `app/editor/page.tsx` — minimal placeholder so the `/editor` route exists.
+  - `components/editor/editor-navbar.tsx` — `<UserButton>` added to right section.
+  - Verified: `tsc --noEmit` clean, `npm run build` succeeds.
+
 ## In Progress
 
 - None.
 
 ## Next Up
 
-- Wire the editor chrome into the editor workspace route once that unit is scoped.
+- Wire the editor chrome into the editor workspace route (replace the `app/editor/page.tsx` placeholder).
 
 ## Open Questions
 
@@ -48,3 +59,5 @@ Update this file whenever the current phase, active feature, or implementation s
 - shadcn components reference their own semantic tokens (`bg-background`, `text-foreground`, etc.); these are mapped onto the dark palette in `globals.css`, so do not expect them to use the `bg-base`/`text-copy-*` utilities directly. Use the project utilities in app-level components.
 - `globals.css` imports `shadcn/tailwind.css` (resolves via the `shadcn` package `exports`) for the animations and `data-*` custom variants the radix-nova components require — keep it.
 - `next build` warns about multiple lockfiles (a stray `/Users/johnhuynh/package-lock.json` above the repo). Pre-existing/environmental, not from this work.
+- Clerk appearance `variables` use `@clerk/ui` names (`colorForeground`, `colorInput`, `colorMutedForeground`) — not the older `@clerk/themes` names (`colorText`, `colorInputBackground`). Check `@clerk/ui` types before adding new variables.
+- The middleware file is `proxy.ts` (Next.js 16 convention) — not `middleware.ts`.
