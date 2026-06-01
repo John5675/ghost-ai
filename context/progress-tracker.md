@@ -4,7 +4,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Design system and UI primitives complete (feature spec `01-design-system.md`)
+- Editor chrome components complete (feature spec `02-editor.md`)
 
 ## Current Goal
 
@@ -21,13 +21,19 @@ Update this file whenever the current phase, active feature, or implementation s
   - Added `dark` class to `<html>` in `app/layout.tsx` so the components' `dark:` variants activate; updated placeholder metadata.
   - Verified: `tsc --noEmit` clean and `next build` succeeds (CSS compiles, all imports resolve). No default light styling.
 
+- `02-editor.md`:
+  - `components/editor/editor-navbar.tsx` — fixed-height (`h-14`) top navbar with left/center/right sections on `bg-surface` + `border-b border-surface-border`. Left section: ghost icon `Button` toggling the sidebar, swapping `PanelLeftClose`/`PanelLeftOpen` on `isSidebarOpen`. Center and right are empty placeholders. Props: `isSidebarOpen`, `onToggleSidebar`.
+  - `components/editor/project-sidebar.tsx` — `absolute`/`z-40` floating overlay (does not push content); slides in via `translate-x` transition driven by `isOpen`; `pointer-events-none` while closed. Header with `Projects` title + close button; shadcn `Tabs` (My Projects / Shared) with icon-based empty placeholders; full-width `New Project` button (`Plus` icon) pinned to a bottom footer. Props: `isOpen`, `onClose`.
+  - `components/editor/editor-dialog.tsx` — generic reusable dialog pattern over shadcn `Dialog`; `rounded-3xl`/`bg-elevated` modal styling from `globals.css` tokens; title, optional description, optional footer-action slot, and children. No concrete dialogs built yet, per spec.
+  - Verified: `tsc --noEmit` clean, `eslint components/editor` clean, `next build` succeeds.
+
 ## In Progress
 
 - None.
 
 ## Next Up
 
-- Add the next planned feature unit here.
+- Wire the editor chrome into the editor workspace route once that unit is scoped.
 
 ## Open Questions
 
